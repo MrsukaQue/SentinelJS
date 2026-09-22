@@ -1,0 +1,98 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ScanStatus {
+  QUEUED
+  RESOLVING
+  CONNECTING
+  SCANNING
+  ANALYZING
+  COMPLETED
+  FAILED
+}
+
+enum Severity {
+  CRITICAL
+  HIGH
+  MEDIUM
+  LOW
+  INFORMATIONAL
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  scans        Scan[]
+  targets      Target[]
+}
+
+model Target {
+  id        String   @id @default(uuid())
+  url       String
+  hostname  String
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  scans     Scan[]
+  createdAt DateTime @default(now())
+
+  @@unique([userId, url])
+  @@index([userId, createdAt])
+}
+
+model Scan {
+  id             String     @id @default(uuid())
+  userId         String
+  targetId       String
+  status         ScanStatus @default(QUEUED)
+  score          Int?
+  scannerVersion String
+  startedAt      DateTime?
+  completedAt    DateTime?
+  errorMessage   String?
+  createdAt      DateTime   @default(now())
+  user           User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  target         Target     @relation(fields: [targetId], references: [id], onDelete: Cascade)
+  findings       Finding[]
+  job            ScanJob?
+
+  @@index([userId, createdAt])
+}
+
+model Finding {
+  id             String   @id @default(uuid())
+  scanId         String
+  checkId        String
+  name           String
+  severity       Severity
+  category       String
+  evidence       String
+  description    String
+  impact         String
+  component      String
+  recommendation String
+  reference      String?
+  deduction      Int
+  createdAt      DateTime @default(now())
+  scan           Scan     @relation(fields: [scanId], references: [id], onDelete: Cascade)
+
+  @@index([scanId, severity])
+}
+
+model ScanJob {
+  id        String   @id @default(uuid())
+  scanId    String   @unique
+  queueId   String?  @unique
+  attempts  Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  scan      Scan     @relation(fields: [scanId], references: [id], onDelete: Cascade)
+}
