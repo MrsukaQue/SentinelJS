@@ -1,0 +1,7 @@
+{
+  "name": "@sentineljs/demo",
+  "private": true,
+  "type": "module",
+  "scripts": { "start": "node src/index.js" },
+  "engines": { "node": ">=22" }
+}

@@ -1,6 +1,7 @@
 import { db } from '../database/client.js';
 import { createScan, getScan } from '../services/scan-service.js';
 import { AppError } from '../utils/errors.js';
+import { htmlReport, reportData } from '../services/report-service.js';
 
 export async function startScan(req, res) {
   const scan = await createScan(req.user.id, req.validated.body.url);
@@ -29,4 +30,14 @@ export async function deleteScan(req, res) {
   if (!['COMPLETED', 'FAILED'].includes(scan.status)) throw new AppError(409, 'SCAN_ACTIVE', 'Active scans cannot be deleted');
   await db.scan.delete({ where: { id: scan.id } });
   res.status(204).end();
+}
+
+export async function exportReport(req, res) {
+  const scan = await getScan(req.user.id, req.validated.params.id);
+  if (scan.status !== 'COMPLETED') throw new AppError(409, 'SCAN_INCOMPLETE', 'Reports are available only for completed scans');
+  const format = req.validated.query.format;
+  const filename = `sentineljs-${scan.target.hostname}-${scan.id}.${format}`;
+  res.setHeader('Content-Disposition', `attachment; filename="${filename.replace(/[^a-zA-Z0-9._-]/g, '_')}"`);
+  if (format === 'html') return res.type('html').send(htmlReport(scan));
+  return res.type('json').send(JSON.stringify(reportData(scan), null, 2));
 }

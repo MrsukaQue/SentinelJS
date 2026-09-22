@@ -1,0 +1,45 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: sentinel
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-development-only-password}
+      POSTGRES_DB: sentineljs
+    volumes: [postgres_data:/var/lib/postgresql/data]
+    healthcheck: { test: [CMD-SHELL, 'pg_isready -U sentinel'], interval: 5s, timeout: 3s, retries: 10 }
+  redis:
+    image: redis:8-alpine
+    command: redis-server --appendonly yes
+    volumes: [redis_data:/data]
+    healthcheck: { test: [CMD, redis-cli, ping], interval: 5s, timeout: 3s, retries: 10 }
+  backend:
+    build: { context: ., dockerfile: docker/backend.Dockerfile }
+    environment: &backend-env
+      NODE_ENV: production
+      PORT: 4000
+      CLIENT_ORIGIN: http://localhost:8080
+      DATABASE_URL: postgresql://sentinel:${POSTGRES_PASSWORD:-development-only-password}@postgres:5432/sentineljs
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET to at least 32 random characters}
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
+    command: sh -c "npx prisma migrate deploy --schema server/prisma/schema.prisma && npm -w server start"
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis: { condition: service_healthy }
+  worker:
+    build: { context: ., dockerfile: docker/backend.Dockerfile }
+    environment: *backend-env
+    command: npm -w server run worker
+    depends_on:
+      backend: { condition: service_started }
+  frontend:
+    build: { context: ., dockerfile: docker/frontend.Dockerfile }
+    ports: ['8080:80']
+    depends_on: [backend]
+  demo:
+    build: { context: ., dockerfile: docker/demo.Dockerfile }
+    ports: ['8081:3000']
+
+volumes:
+  postgres_data:
+  redis_data:
