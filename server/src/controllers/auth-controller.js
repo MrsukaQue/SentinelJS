@@ -1,4 +1,10 @@
-import { authenticate, clearSessionCookie, register, setSessionCookie, signAccessToken } from '../services/auth-service.js';
+import {
+  authenticate,
+  clearSessionCookie,
+  register,
+  setSessionCookie,
+  signAccessToken,
+} from '../services/auth-service.js';
 
 export async function registerUser(req, res) {
   const user = await register(req.validated.body.email, req.validated.body.password);

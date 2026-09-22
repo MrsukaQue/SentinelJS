@@ -6,7 +6,8 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-development-only-password}
       POSTGRES_DB: sentineljs
     volumes: [postgres_data:/var/lib/postgresql/data]
-    healthcheck: { test: [CMD-SHELL, 'pg_isready -U sentinel'], interval: 5s, timeout: 3s, retries: 10 }
+    healthcheck:
+      { test: [CMD-SHELL, 'pg_isready -U sentinel'], interval: 5s, timeout: 3s, retries: 10 }
   redis:
     image: redis:8-alpine
     command: redis-server --appendonly yes

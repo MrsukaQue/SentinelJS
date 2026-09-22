@@ -7,7 +7,7 @@ export function finding(check, evidence, overrides = {}) {
     description: check.description,
     impact: check.impact,
     recommendation: check.recommendation,
-    component: overrides.component || 'HTTP response',
+    component: overrides.component || check.component || 'HTTP response',
     reference: check.reference || null,
     evidence,
     ...overrides,

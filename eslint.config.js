@@ -9,6 +9,7 @@ export default [
   {
     files: ['server/**/*.js', 'demo/**/*.js'],
     languageOptions: { globals: globals.node },
+    rules: { 'no-unused-vars': ['error', { argsIgnorePattern: '^_' }] },
   },
   {
     files: ['client/**/*.js', 'client/**/*.jsx'],

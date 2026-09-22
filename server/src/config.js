@@ -7,7 +7,10 @@ const schema = z.object({
   DATABASE_URL: z.string().min(1),
   REDIS_URL: z.string().url().default('redis://localhost:6379'),
   JWT_SECRET: z.string().min(32),
-  COOKIE_SECURE: z.enum(['true', 'false']).default('false').transform((v) => v === 'true'),
+  COOKIE_SECURE: z
+    .enum(['true', 'false'])
+    .default('false')
+    .transform((v) => v === 'true'),
   SCANNER_VERSION: z.string().default('1.0.0'),
   SCAN_TIMEOUT_MS: z.coerce.number().int().min(1000).max(30000).default(10000),
   MAX_RESPONSE_BYTES: z.coerce.number().int().min(1024).max(5242880).default(2097152),

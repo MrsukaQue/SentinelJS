@@ -7,5 +7,9 @@ const styles = {
 };
 
 export function SeverityBadge({ severity }) {
-  return <span className={`rounded-md border px-2 py-1 text-[11px] font-bold ${styles[severity]}`}>{severity}</span>;
+  return (
+    <span className={`rounded-md border px-2 py-1 text-[11px] font-bold ${styles[severity]}`}>
+      {severity}
+    </span>
+  );
 }

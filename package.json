@@ -1,8 +1,13 @@
 {
   "name": "sentineljs",
   "private": true,
+  "type": "module",
   "version": "1.0.0",
-  "workspaces": ["client", "server", "demo"],
+  "workspaces": [
+    "client",
+    "server",
+    "demo"
+  ],
   "scripts": {
     "dev": "concurrently -n api,worker,web,demo -c blue,magenta,cyan,yellow \"npm -w server run dev\" \"npm -w server run worker\" \"npm -w client run dev\" \"npm -w demo start\"",
     "build": "npm -w server run build && npm -w client run build",
@@ -15,12 +20,14 @@
     "db:migrate": "npm -w server run db:migrate"
   },
   "devDependencies": {
-    "@eslint/js": "^9.35.0",
+    "@eslint/js": "^10.0.0",
     "concurrently": "^9.2.1",
-    "eslint": "^9.35.0",
+    "eslint": "^10.0.0",
     "eslint-config-prettier": "^10.1.8",
     "globals": "^16.4.0",
     "prettier": "^3.6.2"
   },
-  "engines": { "node": ">=22" }
+  "engines": {
+    "node": ">=22"
+  }
 }

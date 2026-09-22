@@ -4,5 +4,10 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  server: { proxy: { '/api': 'http://localhost:4000', '/socket.io': { target: 'ws://localhost:4000', ws: true } } },
+  server: {
+    proxy: {
+      '/api': 'http://localhost:4000',
+      '/socket.io': { target: 'ws://localhost:4000', ws: true },
+    },
+  },
 });
