@@ -18,6 +18,7 @@ function requestOnce(url, records) {
         },
         timeout: config.SCAN_TIMEOUT_MS,
         rejectUnauthorized: true,
+        autoSelectFamily: false,
         lookup: (_hostname, options, callback) => {
           selectedAddress =
             records.find((item) => !options?.family || item.family === options.family) ||
@@ -26,6 +27,7 @@ function requestOnce(url, records) {
         },
       },
       (response) => {
+        const socket = response.socket;
         const chunks = [];
         let bytes = 0;
         response.on('data', (chunk) => {
@@ -41,7 +43,7 @@ function requestOnce(url, records) {
           else chunks.push(chunk);
         });
         response.on('end', () => {
-          const remoteAddress = response.socket.remoteAddress?.replace(/^::ffff:/, '');
+          const remoteAddress = socket.remoteAddress?.replace(/^::ffff:/, '');
           if (remoteAddress !== selectedAddress.address)
             return reject(
               new AppError(
@@ -50,7 +52,7 @@ function requestOnce(url, records) {
                 'The connected address did not match validated DNS',
               ),
             );
-          const certificate = response.socket.getPeerCertificate?.() || {};
+          const certificate = socket.getPeerCertificate?.() || {};
           const rawHeaders = response.rawHeaders;
           const setCookies = [];
           for (let index = 0; index < rawHeaders.length; index += 2)
@@ -70,7 +72,7 @@ function requestOnce(url, records) {
               ? {
                   validTo: certificate.valid_to,
                   issuer: certificate.issuer?.O,
-                  protocol: response.socket.getProtocol?.(),
+                  protocol: socket.getProtocol?.(),
                 }
               : null,
           });
