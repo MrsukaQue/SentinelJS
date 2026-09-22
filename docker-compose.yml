@@ -23,7 +23,7 @@ services:
       REDIS_URL: redis://redis:6379
       JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET to at least 32 random characters}
       COOKIE_SECURE: ${COOKIE_SECURE:-false}
-    command: sh -c "npx prisma migrate deploy --schema server/prisma/schema.prisma && npm -w server start"
+    command: sh -c "npm -w server run db:migrate && npm -w server start"
     depends_on:
       postgres: { condition: service_healthy }
       redis: { condition: service_healthy }
