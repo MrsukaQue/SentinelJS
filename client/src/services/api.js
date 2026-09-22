@@ -4,7 +4,10 @@ const request = async (path, options = {}) => {
     headers: { 'Content-Type': 'application/json', ...options.headers },
     ...options,
   });
-  const body = response.status === 204 ? { data: null } : await response.json();
+  const body =
+    response.status === 204
+      ? { data: null }
+      : await response.json().catch(() => ({ error: { message: 'API unavailable' } }));
   if (!response.ok) {
     const error = new Error(body.error?.message || 'Request failed');
     error.status = response.status;
