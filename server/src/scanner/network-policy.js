@@ -33,6 +33,11 @@ export function isBlockedAddress(address) {
     if (normalized === '::' || normalized === '::1') return true;
     const mapped = normalized.match(/^::ffff:(\d+\.\d+\.\d+\.\d+)$/);
     if (mapped) return isBlockedAddress(mapped[1]);
+    const mappedHex = normalized.match(/^::ffff:([0-9a-f]{1,4}):([0-9a-f]{1,4})$/);
+    if (mappedHex) {
+      const value = (parseInt(mappedHex[1], 16) * 65536) + parseInt(mappedHex[2], 16);
+      return isBlockedAddress([24, 16, 8, 0].map((shift) => (value >>> shift) & 255).join('.'));
+    }
     return /^(f[cd]|fe[89ab])/.test(normalized) || normalized.startsWith('2001:db8:');
   }
   return true;
