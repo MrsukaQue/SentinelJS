@@ -20,8 +20,8 @@ export function App() {
       const data = await api.scans();
       setScans(data);
       setAuthenticated(true);
-    } catch (error) {
-      if (error.status === 401) setAuthenticated(false);
+    } catch {
+      setAuthenticated(false);
     }
   }, []);
   useEffect(() => {
