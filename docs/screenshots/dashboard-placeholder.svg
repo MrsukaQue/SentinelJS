@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title description">
-  <title id="title">SentinelJS dashboard screenshot placeholder</title>
-  <desc id="description">A dark placeholder panel for a future project screenshot.</desc>
-  <rect width="1200" height="675" fill="#060a12"/><rect x="70" y="60" width="1060" height="555" rx="24" fill="#0c131f" stroke="#1d2b3d" stroke-width="2"/>
-  <path d="M170 180l55-22 55 22v50c0 58-55 84-55 84s-55-26-55-84z" fill="none" stroke="#35e0a1" stroke-width="10"/><path d="M202 230l17 17 34-43" fill="none" stroke="#35e0a1" stroke-width="10"/>
-  <text x="320" y="220" fill="#e6edf7" font-family="system-ui,sans-serif" font-size="58" font-weight="700">SentinelJS</text><text x="320" y="275" fill="#718096" font-family="system-ui,sans-serif" font-size="25">Dashboard screenshot placeholder</text>
-  <rect x="170" y="380" width="860" height="16" rx="8" fill="#172235"/><rect x="170" y="380" width="640" height="16" rx="8" fill="#35e0a1"/><text x="170" y="455" fill="#a9b8ca" font-family="system-ui,sans-serif" font-size="22">Replace this image with a real deployment screenshot.</text>
-</svg>
